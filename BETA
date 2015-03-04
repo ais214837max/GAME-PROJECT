@@ -1,0 +1,520 @@
+<html>
+<head>
+<title>BETA</title>
+<script type="text/javascript" src="SOUND/script/soundmanager2.js"></script>
+<script type="text/javascript" src="SOUND/script/loadsoundchrome.js"></script>
+<center>
+<script src="SETUP/processing-1.4.1.js"></script>
+<script type="text/processing" data-processing-target="mycanvas">
+
+/* @pjs globalKeyEvents = "true"; */
+
+int SCORE;
+int LIVES;
+int LEVEL;
+
+int line;
+
+int frogHorizontal;
+int frogVertical;
+
+boolean death1;
+boolean death2;
+boolean death3;
+
+int object1x;
+int object2x;
+int object3x;
+int object4x;
+
+int object5x;
+int object6x;
+int object7x;
+int object8x;
+
+int log1121;
+int log1122;
+int log91;
+int log92;
+int log93;
+
+int flower1011;
+int flower1012;
+int flower1021;
+int flower1022;
+int flower811;
+int flower812;
+int flower813;
+int flower821;
+int flower822;
+int flower823;
+int flower831;
+int flower832;
+int flower833;
+
+PImage death;
+PImage froggerUP;
+PImage froggerDOWN;
+PImage froggerLEFT;
+PImage froggerRIGHT;
+
+//max
+boolean music;
+boolean dying;
+int MUSIC;
+int DYING;
+
+boolean UP;
+boolean DOWN;
+boolean LEFT;
+boolean	RIGHT;
+
+void setup ()
+{
+	size(800,800);
+	frameRate(60);
+	
+	orator = loadFont("Orator Std");
+	
+	death        = loadImage("IMAGE/death.jpg");
+	froggerUP    = loadImage("IMAGE/froggerUP.jpg");
+	froggerDOWN  = loadImage("IMAGE/froggerDOWN.jpg");
+	froggerLEFT  = loadImage("IMAGE/froggerLEFT.jpg");
+	froggerRIGHT = loadImage("IMAGE/froggerRIGHT.jpg");
+
+	line = 0;
+	
+	SCORE = (int)sessionStorage.transferx2;
+	LIVES = (int)sessionStorage.transferx1;
+	LEVEL = 3;
+	
+	frogHorizontal = 350;
+	frogVertical   = 750;
+	
+	death1 = false;
+	death2 = false;
+	death3 = false;
+	
+	object1x = -50;
+	object2x = 800;
+	object3x = -50;
+	object4x = 800;	
+	object5x = -50;
+	object6x = 800;
+	
+	log1121 = 50;
+	log1122 = 450;
+	log91 = 50;
+	log92 = 290;
+	log93 = 530;
+	
+	flower1011 = 75;
+	flower1012 = 125;
+	flower1021 = 475;
+	flower1022 = 525;
+	flower811 = 75;
+	flower812 = 125;
+	flower813 = 175;
+	flower821 = 315;
+	flower822 = 365;
+	flower823 = 415;
+	flower831 = 555;
+	flower832 = 605;
+	flower833 = 655;
+
+	//max
+	music =	true;
+	dying = false;
+	MUSIC = 1;
+	DYING = 100;
+
+	UP    = true;
+	DOWN  = false;
+	LEFT  = false;
+	RIGHT = false;
+}
+
+
+void draw ()
+{
+	background(0,0,0);
+
+	//TOP ROW TEXT
+	fill(255,255,255);
+	textFont(orator,40);
+	text("SCORE " + SCORE,45,45);
+	text("LEVEL " + LEVEL,295,45);
+	text("LIVES " + LIVES,520,45);
+	//text(frogVertical,600,100);
+	
+	if (music == true)
+		{
+			soundManager.play('s1');
+			MUSIC = MUSIC - 1;
+			
+			if (MUSIC < 1)
+				{
+					music = false;
+				}	
+		}
+
+	setting();
+	parameters();
+	max();	
+	jack();
+	frogMOVEMENT();
+}	
+
+void setting()
+{
+	//starting zone	
+	fill(255,0,255);
+	rect(-5,750,810,50);
+
+	//line 6
+	fill(76,0,153);
+	rect(0,400,800,50);
+
+if (Stage1 == true)
+	{
+		//first square
+		fill(150,150,255);
+		rect(object1x,700,50,50);
+	
+		//second square
+		fill(255,150,150);
+		rect(object2x,650,50,50);	
+	}
+
+if (Stage2 == true)
+	{
+		//first square
+		fill(150,150,255);
+		rect(object1x,700,50,50);
+
+		//second square
+		fill(255,150,150);
+		rect(object2x,650,50,50);
+	
+		//third square
+		fill(150,150,255);
+		rect(object3x,600,50,50);
+	
+		//fourth square
+		fill(255,150,150);
+		rect(object4x,550,50,50);
+	}
+
+if (Stage3 == true)
+	{
+		//first square
+		fill(150,150,255);
+		rect(object1x,700,50,50);
+	
+		//second square
+		fill(255,150,150);
+		rect(object2x,650,50,50);
+	
+		//third square
+		fill(150,150,255);
+		rect(object3x,600,50,50);
+	
+		//fourth square
+		fill(255,150,150);
+		rect(object4x,550,50,50);
+		
+		//fifth square
+		fill(150,150,255);
+		rect(object5x,500,50,50);
+		
+		//sixth square
+		fill(255,150,150);
+		rect(object6x,450,50,50);
+	}
+}
+
+void parameters()
+{
+//death
+	if (death1 == true)
+		{
+			LIVES = 2;
+		}
+	 if (death2 == true)
+	 	{
+	 		LIVES = 1;
+	 	}
+	 if (death3 == true)
+	 	{	
+	 		LIVES = 0;
+	 	}
+	
+//line 0
+	//safe zone 1
+	if (frogVertical == 750)
+		{
+			line = 0;
+		}
+//line 1
+	if (frogVertical == 700)
+		{
+			line = 1;
+		}
+//line 2
+	if (frogVertical == 650)
+		{
+			line = 2;
+		}
+//line 3
+	if (frogVertical == 600)
+		{
+			line = 3;
+		}
+//line 4
+	if (frogVertical == 550)
+		{
+			line = 4;
+		}
+//line 5
+	if (frogVertical == 500)
+		{
+			line = 5;
+		}
+//line 6
+	if (frogVertical == 450)
+		{
+			line = 6;
+		}
+//line 7	
+	if (frogVertical == 350)
+		{
+			line = 7;
+		}	
+//line 8
+	if (frogVertical == 300)
+		{
+			line = 8;
+		}
+//line 9
+	if (frogVertical == 250)
+		{
+			line = 9;
+		}
+//line 10
+	if (frogVertical == 200)
+		{
+			line = 10;
+		}
+		
+//movement limiters
+	if (frogVertical < 150)
+		{
+			frogVertical = 150;
+		}
+	if (frogVertical > 750)
+		{
+			frogVertical = 750;
+		}
+	if (frogHorizontal < 0)
+		{
+			frogHorizontal = 0;
+		}
+	if (frogHorizontal > 750)
+		{
+			frogHorizontal = 750;
+		}
+
+	if (Stage1 == true)
+		{
+			//line 12
+			fill(0,204,102);
+			rect(0,400,800,100);
+			fill(0,0,0);
+			text("GOAL",350,475);
+		}
+
+	if (Stage2 == true)
+		{
+			//line 12
+			fill(0,204,102);
+			rect(0,200,800,100);
+			fill(0,0,0);
+			text("GOAL",350,275);
+		}
+
+	if (Stage3 == true)
+		{
+			//line 12
+			fill(0,204,102);
+			rect(0,100,800,100);
+			fill(0,0,0);
+			text("GOAL",350,175);
+		}
+}
+
+void frogMOVEMENT()
+{
+//FROG DIRECTION
+	//W
+	if (UP == true)
+		{
+			image(froggerUP,frogHorizontal,frogVertical,50,50);
+		}
+	//S
+	if (DOWN == true)
+		{
+			image(froggerDOWN,frogHorizontal,frogVertical,50,50);
+		}
+	//A
+	if (LEFT == true)
+		{
+			image(froggerLEFT,frogHorizontal,frogVertical,50,50);
+		}
+	//D
+	if (RIGHT == true)
+		{
+			image(froggerRIGHT,frogHorizontal,frogVertical,50,50);
+		}
+
+//DEATH ANIMATION
+	if (dying == true)
+		{
+			image(death,frogHorizontal,frogVertical,50,50);
+			DYING = DYING - 1;
+			
+			if (DYING <= 0)
+				{
+					if (LIVES == 0)
+						{
+							link("gameOver.html");
+						}
+					frogHorizontal = 350;
+					frogVertical   = 750;
+					dying = false;					
+				}			
+		}
+}
+
+void keyPressed()
+{
+	if (dying == false)
+		{
+	//going up
+			if (key == 'w')
+				{	
+					if (frogVertical > 200 && frogVertical < 800)
+						{
+									SCORE = SCORE + 10;
+						
+									soundManager.play('s0');
+								}
+					UP    = true; 
+					DOWN  = false;
+					LEFT  = false;
+					RIGHT = false;
+					frogVertical = frogVertical - 50;				
+				}
+			
+	//going down
+			if (key == 's')
+				{	
+					SCORE = SCORE - 10;			
+					frogVertical = frogVertical + 50;
+				
+					if (SCORE < 0)
+						{
+							SCORE = 0;
+						}
+					UP    = false;
+					DOWN  = true;
+					LEFT  = false;
+					RIGHT = false;
+					soundManager.play('s0');
+				}
+		
+	//going left
+			if (key == 'a')
+				{
+					frogHorizontal = frogHorizontal - 50;
+					UP    = false;
+					DOWN  = false;
+					LEFT  = true;
+					RIGHT = false;
+					soundManager.play('s0');
+				}
+		
+	//going right
+			if (key == 'd')
+				{
+					frogHorizontal = frogHorizontal + 50;
+					UP    = false;
+					DOWN  = false;
+					LEFT  = false;
+					RIGHT = true;
+					soundManager.play('s0');
+				}
+			
+	//UPPER CASE BECAUSE WE DON'T SUCK	
+			if (key == 'W')
+				{
+					if (frogVertical > 200 && frogVertical < 800)
+						{
+							SCORE = SCORE + 10;
+							soundManager.play('s0');
+						}
+					UP    = true;
+					DOWN  = false;
+					LEFT  = false;
+					RIGHT = false;
+					frogVertical = frogVertical - 50;
+				}
+			
+			if (key == 'S')
+				{
+					SCORE = SCORE - 10;
+				
+					frogVertical = frogVertical + 50;
+				
+					if (SCORE < 0)
+						{
+							SCORE = 0;
+						}
+					UP    = false;
+					DOWN  = true;
+					LEFT  = false;
+					RIGHT = false;
+					soundManager.play('s0');
+				}
+		
+			if (key == 'A')
+				{
+					frogHorizontal = frogHorizontal - 50;
+					UP    = false;
+					DOWN  = false;
+					LEFT  = true;
+					RIGHT = false;
+					soundManager.play('s0');
+				}
+			
+			if (key == 'D')
+				{
+					frogHorizontal = frogHorizontal + 50;
+					UP    = false;
+					DOWN  = false;
+					LEFT  = false;
+					RIGHT = true;
+					soundManager.play('s0');
+				}
+	}
+}
+
+</script>
+<canvas id="mycanvas"></canvas>
+</head>
+
+<body>
+
+</body>
+</html>
+
+
